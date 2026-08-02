@@ -11,7 +11,7 @@ test('login page', async ({ page }) => {
     await expect(page.locator('#password')).toHaveValue('Foodies2025!')
     await page.getByRole('button', {name: "Login"}).click()
     await expect(page.getByText('Invalid credentials')).not.toBeVisible()
-    await expect(page).toHaveURL('http://localhost:5173/register')
+    await expect(page).toHaveURL('http://localhost:5173/')
     await expect(page).not.toHaveURL('http://localhost:5173/auth/login')
 
     await expect(page.getByRole('article').first()).toBeVisible()
