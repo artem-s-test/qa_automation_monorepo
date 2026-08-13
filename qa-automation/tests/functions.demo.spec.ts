@@ -1,6 +1,9 @@
 import { test, expect } from "@playwright/test";
 import { generateRandomEmail, calculateDiscountedPrice } from "../helpers";
 
+const isHeadless: boolean = true
+const testTags: string[] = ['smoke', 'regression']
+testTags.push(5)
 test("функції", async ({ page }) => {
   const finalPrice: number = calculateDiscountedPrice(299, 10);
   console.log(finalPrice);
