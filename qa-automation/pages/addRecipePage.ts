@@ -35,7 +35,7 @@ export class AddRecipePage {
     this.errorMessages = page.getByTestId('error-message')
   }
 
-  async goto(): Promise<void> {
+  async open(): Promise<void> {
     await this.page.goto('/add-recipe')
   }
 

@@ -3,6 +3,7 @@
     "target": "es2025",
     "module": "esnext",
     "strict": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "types": ["node"]
   }
 }
