@@ -16,6 +16,7 @@ export class AddRecipePage {
   readonly instructionsInput: Locator
   readonly publishButton: Locator
   readonly errorMessages: Locator
+  readonly successToast: Locator
 
   constructor(page: Page) {
     this.page = page
@@ -33,6 +34,7 @@ export class AddRecipePage {
     this.instructionsInput = page.getByTestId('instructions-input')
     this.publishButton = page.getByRole('button', { name: /Publish Recipe|Loading/ })
     this.errorMessages = page.getByTestId('error-message')
+    this.successToast = page.getByText('Recipe created successfully!')
   }
 
   async open(): Promise<void> {

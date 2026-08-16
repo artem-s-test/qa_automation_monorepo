@@ -6,9 +6,10 @@ import { DEFAULT_USER } from '../data/test-user'
 
 test.describe('Додавання рецепта', () => {
   let addRecipePage: AddRecipePage
+  let loginPage: LoginPage
 
   test.beforeEach(async ({ page }) => {
-    const loginPage = new LoginPage(page)
+    loginPage = new LoginPage(page)
     addRecipePage = new AddRecipePage(page)
 
     await loginPage.open()
@@ -34,7 +35,7 @@ test.describe('Додавання рецепта', () => {
 
     await addRecipePage.submit()
 
-    await expect(page.getByText('Recipe created successfully!')).toBeVisible()
+    await expect(addRecipePage.successToast).toBeVisible()
     await expect(page).toHaveURL(url => url.pathname.startsWith('/recipes/'))
   })
 })
