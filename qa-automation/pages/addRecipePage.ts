@@ -1,4 +1,5 @@
 import { Page, Locator } from '@playwright/test'
+import { RecipeCategory } from '../types/enums'
 
 export class AddRecipePage {
   page: Page
@@ -61,7 +62,7 @@ export class AddRecipePage {
     await this.caloriesInput.fill(calories)
   }
 
-  async selectCategory(categoryName: string): Promise<void> {
+  async selectCategory(categoryName: RecipeCategory): Promise<void> {
     await this.categoryDropdown.click()
     await this.page.getByRole('option', { name: categoryName, exact: true }).click()
   }
@@ -100,7 +101,7 @@ export class AddRecipePage {
     description: string
     time: string
     calories?: string
-    category: string
+    category: RecipeCategory
     ingredientName: string
     ingredientAmount: string
     instructions: string

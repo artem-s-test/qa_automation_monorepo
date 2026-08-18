@@ -3,6 +3,7 @@ import path from 'path'
 import { LoginPage } from '../pages/loginPage'
 import { AddRecipePage } from '../pages/addRecipePage'
 import { DEFAULT_USER } from '../data/test-user'
+import { RecipeCategory } from '../types/enums'
 
 test.describe('Додавання рецепта', () => {
   let addRecipePage: AddRecipePage
@@ -25,7 +26,7 @@ test.describe('Додавання рецепта', () => {
     await addRecipePage.fillDescription('A tasty recipe created by an automated test')
     await addRecipePage.fillTime('30')
     await addRecipePage.fillCalories('250')
-    await addRecipePage.selectCategory('Dessert')
+    await addRecipePage.selectCategory(RecipeCategory.Dessert)
     await addRecipePage.addIngredient('Squid', '200g')
     await addRecipePage.fillInstructions('Mix everything together and cook for 30 minutes')
 
