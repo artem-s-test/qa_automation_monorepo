@@ -1,0 +1,89 @@
+# Назва workflow — відображається у вкладці "Actions" на GitHub.
+name: Autotests
+
+# Тригер запуску: цей workflow виконується автоматично при кожному push
+# у будь-яку гілку репозиторію.
+on:
+  push:
+
+jobs:
+  # Один job — набір кроків, що виконуються послідовно на одній віртуальній машині.
+  e2e-tests:
+    # Тип віртуальної машини, яку нам надає GitHub для запуску job.
+    # ubuntu-latest — чистий Linux-сервер з Docker "з коробки".
+    runs-on: ubuntu-latest
+
+    steps:
+      # Крок 1. Клонуємо (checkout) код репозиторію на цю віртуальну машину —
+      # без цього кроку в раннері не було б ні docker-compose.yml, ні коду тестів.
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Крок 2. Піднімаємо застосунок (mysql + backend + frontend) з docker-compose.yml.
+      # -d — у фоновому режимі (detached), щоб команда одразу повернула керування
+      # і workflow міг виконувати наступні кроки.
+      # --build — перезібрати образи backend/frontend з поточного коду, а не брати старі.
+      - name: Start application
+        run: docker compose up -d --build
+
+      # Крок 3. Контейнери вже запущені, але сервісам всередині (особливо Vite dev-серверу
+      # та Node.js-бекенду) потрібен час, щоб реально почати відповідати на запити.
+      # Тому в циклі (до 60 спроб з паузою 2 секунди = максимум 2 хвилини) опитуємо
+      # обидва сервіси, поки вони не почнуть відповідати успішно (curl -sf).
+      # Якщо застосунок так і не піднявся — виводимо логи контейнерів і завершуємо
+      # job з помилкою, щоб не запускати тести проти "мертвого" застосунку.
+      - name: Wait for application to be ready
+        run: |
+          for i in $(seq 1 60); do
+            if curl -sf http://localhost:4040/api-docs > /dev/null && curl -sf http://localhost:5173 > /dev/null; then
+              echo "Application is up"
+              exit 0
+            fi
+            echo "Waiting for application..."
+            sleep 2
+          done
+          echo "Application did not become ready in time"
+          docker compose logs
+          exit 1
+
+      # Крок 4. Збираємо Docker-образ з тестами за Dockerfile у теці qa-automation
+      # (той самий Dockerfile, який використовується і для локального запуску).
+      - name: Build tests image
+        run: docker build -t qa-automation-tests ./qa-automation
+
+      # Крок 5. Запускаємо тести у контейнері, зібраному на попередньому кроці.
+      # --network host — контейнер використовує мережу хоста напряму, тому
+      # "http://localhost:5173" усередині контейнера — це той самий сервіс,
+      # що й опублікований docker-compose портами на самому раннері.
+      # -e CI=true — вмикає в playwright.config.js CI-поведінку (менше воркерів,
+      # автоматичні ретраї, заборона test.only).
+      # -v ...:/app/playwright-report та -v ...:/app/test-results — "прокидуємо"
+      # теки з контейнера на диск раннера, щоб звіт не зник разом з контейнером
+      # (--rm видаляє контейнер одразу після завершення).
+      - name: Run autotests
+        run: |
+          mkdir -p qa-automation/playwright-report qa-automation/test-results
+          docker run --rm --network host \
+            -e CI=true \
+            -v ${{ github.workspace }}/qa-automation/playwright-report:/app/playwright-report \
+            -v ${{ github.workspace }}/qa-automation/test-results:/app/test-results \
+            qa-automation-tests
+
+      # Крок 6. Завантажуємо HTML-звіт Playwright як артефакт GitHub Actions —
+      # його можна буде скачати зі сторінки запуску workflow і відкрити локально.
+      # if: always() — виконати цей крок, навіть якщо попередній крок (тести)
+      # завершився помилкою: звіт про провалені тести потрібен найбільше саме тоді.
+      - name: Upload test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: qa-automation/playwright-report
+          retention-days: 14
+
+      # Крок 7. Прибираємо за собою: зупиняємо і видаляємо контейнери та volume'и
+      # (-v), створені docker-compose. if: always() — виконати завжди, незалежно
+      # від результату тестів, щоб не залишати "висячі" контейнери на раннері.
+      - name: Stop application
+        if: always()
+        run: docker compose down -v
