@@ -53,6 +53,26 @@ services:
     depends_on:
       - backend
 
+  # Автотести (Playwright). Не запускається разом зі звичайним `docker compose up`
+  # завдяки `profiles: [tests]` — щоб не заважати локальній розробці. Запускається
+  # явно: `docker compose run --rm tests` (див. .github/workflows/autotests.yml).
+  tests:
+    build:
+      context: ./qa-automation
+      dockerfile: Dockerfile
+    profiles: ["tests"]
+    environment:
+      CI: "true"
+      # Тести звертаються до фронтенду за іменем сервісу в спільній Docker-мережі
+      # compose, а не через localhost — контейнери в одній мережі бачать одне одного
+      # за назвою сервісу.
+      BASE_URL: http://frontend:5173
+    volumes:
+      - ./qa-automation/playwright-report:/app/playwright-report
+      - ./qa-automation/test-results:/app/test-results
+    depends_on:
+      - frontend
+
 volumes:
   mysql_data:
   uploads:

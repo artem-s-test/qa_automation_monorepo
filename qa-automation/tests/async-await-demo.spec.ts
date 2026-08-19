@@ -11,7 +11,7 @@ test("синтаксис async/await", async ({ page }) => {
 });
 
 test('користувач бачить головну сторінку після входу', async ({ page }) => {
-    await page.goto('http://localhost:5173/auth/login')
+    await page.goto('/auth/login')
     await page.locator('#email').fill('goit@gmail.com')
     await page.locator('#password').fill('Foodies2025!')
     await page.getByRole('button', {name: "Login"}).click()

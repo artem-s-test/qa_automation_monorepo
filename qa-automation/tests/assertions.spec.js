@@ -2,7 +2,7 @@
 import { test, expect } from '@playwright/test';
 
 test('login page', async ({ page }) => {
-    await page.goto('http://localhost:5173/auth/login')
+    await page.goto('/auth/login')
     await expect(page.locator('#email')).toBeVisible()
     await expect(page.locator('button[type="submit"]')).toBeEnabled()
     await page.locator('#email').fill('goit@gmail.com')

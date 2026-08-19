@@ -46,30 +46,20 @@ jobs:
           docker compose logs
           exit 1
 
-      # Крок 4. Збираємо Docker-образ з тестами за Dockerfile у теці qa-automation
-      # (той самий Dockerfile, який використовується і для локального запуску).
-      - name: Build tests image
-        run: docker build -t qa-automation-tests ./qa-automation
-
-      # Крок 5. Запускаємо тести у контейнері, зібраному на попередньому кроці.
-      # --network host — контейнер використовує мережу хоста напряму, тому
-      # "http://localhost:5173" усередині контейнера — це той самий сервіс,
-      # що й опублікований docker-compose портами на самому раннері.
-      # -e CI=true — вмикає в playwright.config.js CI-поведінку (менше воркерів,
-      # автоматичні ретраї, заборона test.only).
-      # -v ...:/app/playwright-report та -v ...:/app/test-results — "прокидуємо"
-      # теки з контейнера на диск раннера, щоб звіт не зник разом з контейнером
-      # (--rm видаляє контейнер одразу після завершення).
+      # Крок 4. Збираємо і запускаємо тести сервісом "tests" з того самого
+      # docker-compose.yml, що й застосунок (сервіс описаний з `profiles: [tests]`,
+      # тому він не заважає звичайному локальному `docker compose up`).
+      # Контейнер тестів приєднується до тієї самої Docker-мережі, що й
+      # mysql/backend/frontend, і звертається до фронтенду за іменем сервіса
+      # (http://frontend:5173, див. BASE_URL у docker-compose.yml) — окремий
+      # `docker build`, ручні volume-маунти чи --network host більше не потрібні,
+      # Compose робить це сам. --build гарантує збірку образу з поточного коду тестів
+      # (а не використання старого образу з кешу), --rm прибирає контейнер одразу
+      # після завершення, а звіт лишається на диску раннера завдяки volumes сервісу "tests".
       - name: Run autotests
-        run: |
-          mkdir -p qa-automation/playwright-report qa-automation/test-results
-          docker run --rm --network host \
-            -e CI=true \
-            -v ${{ github.workspace }}/qa-automation/playwright-report:/app/playwright-report \
-            -v ${{ github.workspace }}/qa-automation/test-results:/app/test-results \
-            qa-automation-tests
+        run: docker compose run --rm --build tests
 
-      # Крок 6. Завантажуємо HTML-звіт Playwright як артефакт GitHub Actions —
+      # Крок 5. Завантажуємо HTML-звіт Playwright як артефакт GitHub Actions —
       # його можна буде скачати зі сторінки запуску workflow і відкрити локально.
       # if: always() — виконати цей крок, навіть якщо попередній крок (тести)
       # завершився помилкою: звіт про провалені тести потрібен найбільше саме тоді.
@@ -81,7 +71,7 @@ jobs:
           path: qa-automation/playwright-report
           retention-days: 14
 
-      # Крок 7. Прибираємо за собою: зупиняємо і видаляємо контейнери та volume'и
+      # Крок 6. Прибираємо за собою: зупиняємо і видаляємо контейнери та volume'и
       # (-v), створені docker-compose. if: always() — виконати завжди, незалежно
       # від результату тестів, щоб не залишати "висячі" контейнери на раннері.
       - name: Stop application
