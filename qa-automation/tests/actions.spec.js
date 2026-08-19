@@ -19,7 +19,7 @@ test('login page', async ({ page }) => {
 });
 
 test('enter search request', async ({ page }) => {
-    await page.goto('http://localhost:5173')
+    await page.goto('/')
     await page.getByPlaceholder('Search recipes').fill('avocado')
     await page.getByPlaceholder('Search recipes').press('Enter')
 });

@@ -19,7 +19,7 @@ test("arrow functions vs function declaration", async ({ page }) => {
 });
 
 test("page evaluate demo", async ({ page }) => {
-  await page.goto("http://localhost:5173");
+  await page.goto("/");
   const buttonCount = await page.evaluate(() => {
     return document.querySelectorAll("button").length;
   });
