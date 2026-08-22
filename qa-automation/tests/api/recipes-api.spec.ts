@@ -3,10 +3,36 @@ import { API_BASE_URL } from "../../data/config";
 
 test.use({ baseURL: API_BASE_URL });
 
+let accessToken: string;
+
+test.beforeAll(async ({ request }) => {
+  const response = await request.post("auth/login", {
+    data: {
+      email: "goit@gmail.com",
+      password: "Foodies2025!",
+    },
+  });
+  expect(response.ok()).toBeTruthy();
+  const loginData = await response.json();
+  accessToken = loginData.data.accessToken;
+});
+
 test("GET /recipes returns list", async ({ request }) => {
   const response = await request.get("recipes");
   // expect(response.ok()).toBeTruthy();
   expect(response.status()).toBe(200);
+  const headers = response.headers()
+  expect(headers['content-type']).toContain('application/json')
+  const getRecipesBody = await response.json();
+  expect(getRecipesBody.message).toEqual("Successfully found recipes!");
+  const recipeBody = getRecipesBody.data.data;
+  expect(Array.isArray(recipeBody)).toBeTruthy();
+  console.log(await response.json());
+  expect(recipeBody.length).toBeGreaterThan(0);
+  recipeBody.forEach((recipe) => {
+    expect(recipe).toHaveProperty("title");
+  });
+  expect(getRecipesBody.data.page).toEqual(1);
 });
 
 test("POST /auth/login returns token", async ({ request }) => {
@@ -21,18 +47,18 @@ test("POST /auth/login returns token", async ({ request }) => {
   expect(respData.data.accessToken).toBeTruthy();
 });
 
-
-test("POST /recipes creates new recipe", async ({ request }) => {
+test("POST /auth/login returns error if password is improper", async ({ request }) => {
   const response = await request.post("auth/login", {
     data: {
       email: "goit@gmail.com",
-      password: "Foodies2025!",
+      password: "wrong342423",
     },
   });
-  expect(response.ok()).toBeTruthy();
-  const loginData = await response.json();
-  const accessToken = loginData.data.accessToken;
+  console.log(JSON.stringify((await response.json())));
+  expect(response.status()).toEqual(401);
+});
 
+test("POST /recipes creates new recipe", async ({ request }) => {
   const newRecipeData = {
     title: "Борщ",
     description:
@@ -69,6 +95,23 @@ test("POST /recipes creates new recipe", async ({ request }) => {
   expect(createdRecipe.ingredients).toHaveLength(1);
   expect(createdRecipe.ingredients[0].id).toBe(newRecipeData.ingredients[0].id);
   expect(createdRecipe.ingredients[0].measure).toBe(
-    newRecipeData.ingredients[0].measure
+    newRecipeData.ingredients[0].measure,
+  );
+
+  const getRecipeResponse = await request.get(`recipes/${createdRecipe.id}`);
+  const getRecipeBody = await getRecipeResponse.json();
+  const recipeData = getRecipeBody.data;
+  expect(recipeData.id).toBeTruthy();
+  expect(recipeData.title).toBe(newRecipeData.title);
+  expect(recipeData.description).toBe(newRecipeData.description);
+  expect(recipeData.category).toBe(newRecipeData.category);
+  expect(recipeData.area).toBe(newRecipeData.area);
+  expect(recipeData.time).toBe(newRecipeData.time);
+  expect(recipeData.calories).toBe(newRecipeData.calories);
+  expect(recipeData.instructions).toBe(newRecipeData.instructions);
+  expect(recipeData.ingredients).toHaveLength(1);
+  expect(recipeData.ingredients[0].id).toBe(newRecipeData.ingredients[0].id);
+  expect(recipeData.ingredients[0].measure).toBe(
+    newRecipeData.ingredients[0].measure,
   );
 });
