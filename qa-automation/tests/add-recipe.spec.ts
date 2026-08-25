@@ -1,26 +1,21 @@
-import { test, expect } from '@playwright/test'
+import { expect } from '@playwright/test'
+import { test } from '../fixtures'
 import path from 'path'
-import { LoginPage } from '../pages/loginPage'
 import { AddRecipePage } from '../pages/addRecipePage'
-import { DEFAULT_USER } from '../data/test-user'
 import { RecipeCategory } from '../types/enums'
 
 test.describe('Додавання рецепта', () => {
   let addRecipePage: AddRecipePage
-  let loginPage: LoginPage
 
-  test.beforeEach(async ({ page }) => {
-    loginPage = new LoginPage(page)
-    addRecipePage = new AddRecipePage(page)
+  test.beforeEach(async ({ authenticatedPage }) => {
+    addRecipePage = new AddRecipePage(authenticatedPage)
 
-    await loginPage.open()
-    await loginPage.login(DEFAULT_USER.email, DEFAULT_USER.password)
-    await expect(page).toHaveURL('/')
+    await expect(authenticatedPage).toHaveURL('/')
     
     await addRecipePage.open()
   })
 
-  test('успішне створення рецепта з усіма полями', async ({ page }) => {
+  test('успішне створення рецепта з усіма полями', async ({ authenticatedPage }) => {
     await addRecipePage.uploadPhoto(path.join(__dirname, '..', 'data', 'test-photo.png'))
     await addRecipePage.fillTitle(`Test recipe ${Date.now()}`)
     await addRecipePage.fillDescription('A tasty recipe created by an automated test')
@@ -37,6 +32,6 @@ test.describe('Додавання рецепта', () => {
     await addRecipePage.submit()
 
     await expect(addRecipePage.successToast).toBeVisible()
-    await expect(page).toHaveURL(url => url.pathname.startsWith('/recipes/'))
+    await expect(authenticatedPage).toHaveURL(url => url.pathname.startsWith('/recipes/'))
   })
 })
