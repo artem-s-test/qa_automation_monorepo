@@ -21,5 +21,6 @@ export class LoginPage {
     await this.emailInput.fill(email)
     await this.password.fill(password)
     await this.loginButton.click()
+    await this.page.waitForURL('/')
   }
 }
