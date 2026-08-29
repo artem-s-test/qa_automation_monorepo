@@ -5,5 +5,5 @@ test('мова браузера відповідає locale project', async ({ p
   const language = await page.evaluate(() => navigator.language);
 
   const { locale } = test.info().project.use;
-  expect(language).toBe(locale);
+  expect(language).toBe(locale || 'en-US');
 });
