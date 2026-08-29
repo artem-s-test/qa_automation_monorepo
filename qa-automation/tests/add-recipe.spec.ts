@@ -44,3 +44,4 @@ test.describe("Додавання рецепта", () => {
       url.pathname.startsWith("/recipes/"),
     );
   });
+});
