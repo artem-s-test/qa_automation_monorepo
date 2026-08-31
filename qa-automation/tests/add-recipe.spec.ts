@@ -17,7 +17,8 @@ test.describe("Додавання рецепта", () => {
 
   test("успішне створення рецепта з усіма полями", async ({
     authenticatedPage,
-  }) => {
+  }, testInfo ) => {
+    console.log(`Файл add-recipe.spec.ts виконується у воркері №${testInfo.workerIndex}`);
     await addRecipePage.uploadPhoto(
       path.join(__dirname, "..", "data", "test-photo.png"),
     );
@@ -43,5 +44,21 @@ test.describe("Додавання рецепта", () => {
     await expect(authenticatedPage).toHaveURL((url) =>
       url.pathname.startsWith("/recipes/"),
     );
+  });
+
+  test("форма додавання рецепта відкривається за прямим посиланням", async ({
+    authenticatedPage,
+  }, testInfo) => {
+    console.log(`Файл add-recipe.spec.ts виконується у воркері №${testInfo.workerIndex}`);
+
+    await expect(authenticatedPage.locator("form")).toBeVisible();
+  });
+
+  test("форма додавання рецепта містить поля для заповнення", async ({
+    authenticatedPage,
+  }, testInfo) => {
+    console.log(`Файл add-recipe.spec.ts виконується у воркері №${testInfo.workerIndex}`);
+
+    await expect(authenticatedPage.locator("input, textarea")).not.toHaveCount(0);
   });
 });
