@@ -1,22 +1,11 @@
 import { expect } from "@playwright/test";
 import { test } from "../fixtures";
 import path from "path";
-import { AddRecipePage } from "../pages/addRecipePage";
 import { RecipeCategory } from "../types/enums";
 
 test.describe("Додавання рецепта", () => {
-  let addRecipePage: AddRecipePage;
-
-  test.beforeEach(async ({ authenticatedPage }) => {
-    addRecipePage = new AddRecipePage(authenticatedPage);
-
-    await expect(authenticatedPage).toHaveURL("/");
-
-    await addRecipePage.open();
-  });
-
   test("успішне створення рецепта з усіма полями", async ({
-    authenticatedPage,
+    addRecipePage,
   }, testInfo ) => {
     console.log(`Файл add-recipe.spec.ts виконується у воркері №${testInfo.workerIndex}`);
     await addRecipePage.uploadPhoto(
@@ -41,24 +30,24 @@ test.describe("Додавання рецепта", () => {
     await addRecipePage.submit();
 
     await expect(addRecipePage.successToast).toBeVisible();
-    await expect(authenticatedPage).toHaveURL((url) =>
+    await expect(addRecipePage.page).toHaveURL((url) =>
       url.pathname.startsWith("/recipes/"),
     );
   });
 
   test("форма додавання рецепта відкривається за прямим посиланням", async ({
-    authenticatedPage,
+    addRecipePage,
   }, testInfo) => {
     console.log(`Файл add-recipe.spec.ts виконується у воркері №${testInfo.workerIndex}`);
 
-    await expect(authenticatedPage.locator("form")).toBeVisible();
+    await expect(addRecipePage.page.locator("form")).toBeVisible();
   });
 
   test("форма додавання рецепта містить поля для заповнення", async ({
-    authenticatedPage,
+    addRecipePage,
   }, testInfo) => {
     console.log(`Файл add-recipe.spec.ts виконується у воркері №${testInfo.workerIndex}`);
 
-    await expect(authenticatedPage.locator("input, textarea")).not.toHaveCount(0);
+    await expect(addRecipePage.page.locator("input, textarea")).not.toHaveCount(0);
   });
 });
