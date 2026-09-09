@@ -3,8 +3,8 @@ on:
   push:
     branches: [ main ]
   pull_request:
-  schedule:
-    - cron: '0 6 * * *'
+  # schedule:
+  #   - cron: '0 6 * * *'
 jobs:
   test:
     runs-on: ubuntu-latest
