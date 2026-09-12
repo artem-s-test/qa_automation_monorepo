@@ -9,7 +9,7 @@ test.describe("Додавання рецепта", () => {
   }, testInfo ) => {
     console.log(`Файл add-recipe.spec.ts виконується у воркері №${testInfo.workerIndex}`);
     await addRecipePage.uploadPhoto(
-      path.join(__dirname, "..", "data", "test-photo.png"),
+      path.join(__dirname, "../", "data", "test-photo.png"),
     );
     await addRecipePage.fillTitle(`Test recipe ${Date.now()}`);
     await addRecipePage.fillDescription(

@@ -31,11 +31,25 @@ jobs:
       - name: Build tests image
         run: docker build -t qa-automation-tests ./qa-automation
       - name: Run autotests
+        shell: bash
+        working-directory: ${{ github.workspace }}
+        env:
+          CI: 'true'
+          BASE_URL: http://localhost:5173
+          DB_USER: headliner
+          DB_PASSWORD: headliner_pass
+          DB_NAME: headliner_db
         run: |
-          docker run --rm --network host \
-            -e CI=true \
-            -v ${{ github.workspace }}/qa-automation/playwright-report:/app/playwright-report \
-            -v ${{ github.workspace }}/qa-automation/test-results:/app/test-results \
+          mkdir -p qa-automation/playwright-report qa-automation/test-results
+
+          docker run --rm --init --ipc=host --network host \
+            -e CI \
+            -e BASE_URL \
+            -e DB_USER \
+            -e DB_PASSWORD \
+            -e DB_NAME \
+            -v "${GITHUB_WORKSPACE}/qa-automation/playwright-report:/app/playwright-report" \
+            -v "${GITHUB_WORKSPACE}/qa-automation/test-results:/app/test-results" \
             qa-automation-tests
       
       - name: Upload test report

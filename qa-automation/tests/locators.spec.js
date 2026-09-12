@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 
 test('локатори на практиці', async ({ page }) => {
     await page.goto('http://localhost:5173/')
-    await expect(page.getByRole('article').locator('button')).toBeVisible()
+    await expect(page.getByRole('article').locator('button').first()).toBeVisible()
 });
 
 
