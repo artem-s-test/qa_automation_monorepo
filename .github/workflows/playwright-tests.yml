@@ -1,5 +1,5 @@
 name: Playwright tests
-# on: 
+on: 
 #   push:
 #     branches: [ main ]
 #   pull_request:
