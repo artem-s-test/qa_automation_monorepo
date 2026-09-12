@@ -2,7 +2,7 @@
 import { test, expect } from '@playwright/test';
 
 test('click seach', async ({ page }) => {
-    await page.goto('http://localhost:5173/')
+    await page.goto('/')
     await page.getByRole('button', {name: "Search"}).dblclick()
     await page.getByRole('article').first().click({button: 'right'})
     await page.getByRole('article').first().click({modifiers: ['Control']})
