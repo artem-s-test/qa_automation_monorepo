@@ -36,5 +36,4 @@ test('add receipe', async ({ page }) => {
     await page.getByRole('button', {name: "Login"}).click()
     await page.locator('a[href="/add-recipe"]').click()
     await page.locator('#photoInput').setInputFiles([])
-    await page.pause()
 });
