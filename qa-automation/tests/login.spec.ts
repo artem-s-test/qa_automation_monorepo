@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test'
 import { LoginPage } from '../pages/loginPage'
 
-test('токен зберігається в local storage після входу', async ({ page, context }) => {
+test.skip('токен зберігається в local storage після входу', async ({ page, context }) => {
   const loginPage = new LoginPage(page)
   await loginPage.open()
   await loginPage.login('goit@gmail.com', 'Foodies2025!')
@@ -12,9 +12,13 @@ test('токен зберігається в local storage після входу
   const cookies = await context.cookies()
 })
 
-test.skip('вхід перенаправляє на головну сторінку', async ({ page }) => {
+test('вхід перенаправляє на головну сторінку', async ({ page }, testInfo) => {
+  await testInfo.attach('Worker-info', {body: `${testInfo.workerIndex}`})
   await page.goto('/auth/login');
-
+  // await page.context().tracing.start({
+  //   screenshots: true,
+  //   snapshots: true
+  // })
   await page.locator('input#email').fill('goit@gmail.com');
   await page.locator('input#password').fill('Foodies2025!');
   await page.locator('button[type="submit"]').click();
@@ -22,4 +26,5 @@ test.skip('вхід перенаправляє на головну сторін�
   // const currentUrl = page.url(); // повертає адресу миттєво, не чекаючи редіректу
   // expect(currentUrl).toBe('http://localhost:5173/'); // звіряє значення один раз, без повторних спроб
   await expect(page).toHaveURL('http://localhost:5173/')
+  // await page.context().tracing.stop({ path: 'trace.zip' });
 });
