@@ -5,7 +5,7 @@ test.describe("Пошук рецептів", () => {
     test.beforeAll(async () => {
     // один раз перед усіма тестами групи
     // наприклад, підготовка даних через API
-    console.log('before all')
+    // console.log('before all')
   });
 
   test.beforeEach(async ({ page }) => {
@@ -23,12 +23,12 @@ test.describe("Пошук рецептів", () => {
   });
   test.afterEach(async ({ page }, testInfo) => {
     // діагностика: статус і адреса сторінки після тесту
-    console.log(`Тест "${testInfo.title}": ${testInfo.status}`);
-    console.log(`Сторінка: ${page.url()}`);
+    // console.log(`Тест "${testInfo.title}": ${testInfo.status}`);
+    // console.log(`Сторінка: ${page.url()}`);
   });
     test.afterAll(async () => {
     // (тест конфлікт мейн гілка) один раз після всіх тестів групи
-    console.log('after all')
+    // console.log('after all')
   });
 
 

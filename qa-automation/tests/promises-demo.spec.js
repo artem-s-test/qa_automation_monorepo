@@ -10,7 +10,7 @@ test("JS Promises", async ({ page }) => {
         .then((result) => console.log(result))
         .catch((error) => console.log(error))
         .finally(()=> console.log('запит завершено'))
-    console.log('Код продовжує виконуватись, не чекаючи проміс')
+    // console.log('Код продовжує виконуватись, не чекаючи проміс')
 });
 
 test("JS Promises - практика", async ({ page }) => {
@@ -18,6 +18,6 @@ test("JS Promises - практика", async ({ page }) => {
         setTimeout(() => resolve({ id: 1, name: 'Alex' }), 1000);
     });
     await fetchUser().then((user)=>{
-        console.log(user)
+        // console.log(user)
     }).catch((error) => console.log(error))
 });

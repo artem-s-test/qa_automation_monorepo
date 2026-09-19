@@ -7,7 +7,6 @@ test.describe("Додавання рецепта", () => {
   test("успішне створення рецепта з усіма полями", async ({
     addRecipePage,
   }, testInfo ) => {
-    console.log(`Файл add-recipe.spec.ts виконується у воркері №${testInfo.workerIndex}`);
     await addRecipePage.uploadPhoto(
       path.join(__dirname, "../", "data", "test-photo.png"),
     );
@@ -38,7 +37,6 @@ test.describe("Додавання рецепта", () => {
   test("форма додавання рецепта відкривається за прямим посиланням", async ({
     addRecipePage,
   }, testInfo) => {
-    console.log(`Файл add-recipe.spec.ts виконується у воркері №${testInfo.workerIndex}`);
 
     await expect(addRecipePage.page.locator("form")).toBeVisible();
   });
@@ -46,7 +44,6 @@ test.describe("Додавання рецепта", () => {
   test("форма додавання рецепта містить поля для заповнення", async ({
     addRecipePage,
   }, testInfo) => {
-    console.log(`Файл add-recipe.spec.ts виконується у воркері №${testInfo.workerIndex}`);
 
     await expect(addRecipePage.page.locator("input, textarea")).not.toHaveCount(0);
   });

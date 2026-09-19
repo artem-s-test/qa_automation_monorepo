@@ -35,11 +35,6 @@ test('Типи даних', async ({page}) => {
     const uniqueId = Symbol('id');
     const todoItem = { title: 'Купити каву', completed: false };
 
-    console.log(typeof notAssigned);
-    console.log(typeof emptyValue);
-    console.log(typeof bigNumber);
-    console.log(typeof uniqueId);
-    console.log(typeof todoItem);
 })
 
 
@@ -52,5 +47,4 @@ test('Приклад', async ({page}) => {
     await page.locator(NEW_TODO_INPUT).fill('Купити чаю')
     await page.keyboard.press('Enter')
     itemsCount = itemsCount + 1
-    console.log('Кількість доданих елементів:', itemsCount)
 })

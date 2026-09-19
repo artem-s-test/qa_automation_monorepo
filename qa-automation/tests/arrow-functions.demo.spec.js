@@ -3,11 +3,9 @@ import { test, expect } from "@playwright/test";
 
 test("arrow functions demo", async ({ page }) => {
   const clickButton = async (selector) => {
-    console.log(`Клік на ${selector}`);
   };
   clickButton("button");
   const doubleNum = (n) => n * 2;
-  console.log(doubleNum(5));
 });
 
 test("arrow functions vs function declaration", async ({ page }) => {
