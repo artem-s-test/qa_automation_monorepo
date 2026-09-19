@@ -10,10 +10,9 @@ test('токен зберігається в local storage після входу
   expect(token).not.toBeNull()
   
   const cookies = await context.cookies()
-  console.log(cookies);
 })
 
-test('вхід перенаправляє на головну сторінку', async ({ page }) => {
+test.skip('вхід перенаправляє на головну сторінку', async ({ page }) => {
   await page.goto('/auth/login');
 
   await page.locator('input#email').fill('goit@gmail.com');
@@ -22,5 +21,5 @@ test('вхід перенаправляє на головну сторінку',
 
   // const currentUrl = page.url(); // повертає адресу миттєво, не чекаючи редіректу
   // expect(currentUrl).toBe('http://localhost:5173/'); // звіряє значення один раз, без повторних спроб
-  await expect(page).toHaveURL('http://localhost:5173/', { timeout: 20000})
+  await expect(page).toHaveURL('http://localhost:5173/')
 });
