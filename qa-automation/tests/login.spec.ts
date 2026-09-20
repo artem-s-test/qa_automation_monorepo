@@ -24,7 +24,7 @@ test('вхід перенаправляє на головну сторінку',
   await page.locator('button[type="submit"]').click();
 
   // const currentUrl = page.url(); // повертає адресу миттєво, не чекаючи редіректу
-  // expect(currentUrl).toBe('http://localhost:5173/'); // звіряє значення один раз, без повторних спроб
-  await expect(page).toHaveURL('http://localhost:5173/')
+  // expect(currentUrl).toBe('/'); // звіряє значення один раз, без повторних спроб
+  await expect(page).toHaveURL('/')
   // await page.context().tracing.stop({ path: 'trace.zip' });
 });

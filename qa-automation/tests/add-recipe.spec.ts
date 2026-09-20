@@ -7,31 +7,37 @@ test.describe("Додавання рецепта", () => {
   test("успішне створення рецепта з усіма полями", async ({
     addRecipePage,
   }, testInfo ) => {
-    await addRecipePage.uploadPhoto(
-      path.join(__dirname, "../", "data", "test-photo.png"),
-    );
-    await addRecipePage.fillTitle(`Test recipe ${Date.now()}`);
-    await addRecipePage.fillDescription(
-      "A tasty recipe created by an automated test",
-    );
-    await addRecipePage.fillTime("30");
-    await addRecipePage.fillCalories("250");
-    await addRecipePage.selectCategory(RecipeCategory.Dessert);
-    await addRecipePage.addIngredient("Squid", "200g");
-    await addRecipePage.fillInstructions(
-      "Mix everything together and cook for 30 minutes",
-    );
+    await test.step('Fill in all required fields', async () => {
+      await addRecipePage.uploadPhoto(
+        path.join(__dirname, "../", "data", "test-photo.png"),
+      );
+      await addRecipePage.fillTitle(`Test recipe ${Date.now()}`);
+      await addRecipePage.fillDescription(
+        "A tasty recipe created by an automated test",
+      );
+      await addRecipePage.fillTime("30");
+      await addRecipePage.fillCalories("250");
+      await addRecipePage.selectCategory(RecipeCategory.Dessert);
+      await addRecipePage.addIngredient("Squid", "200g");
+      await addRecipePage.fillInstructions(
+        "Mix everything together and cook for 30 minutes",
+      );
+    })
 
-    await expect(addRecipePage.ingredientRows).toHaveCount(1);
-    await expect(addRecipePage.ingredientRows.first()).toContainText("Squid");
-    await expect(addRecipePage.ingredientRows.first()).toContainText("200g");
-
-    await addRecipePage.submit();
-
-    await expect(addRecipePage.successToast).toBeVisible();
-    await expect(addRecipePage.page).toHaveURL((url) =>
-      url.pathname.startsWith("/recipes/"),
-    );
+    await test.step('Verify ingredients row', async () => {
+      await expect(addRecipePage.ingredientRows, 'Було створено лише одни інгредієнт').toHaveCount(1);
+      await expect(addRecipePage.ingredientRows.first()).toContainText("Squid");
+      await expect(addRecipePage.ingredientRows.first()).toContainText("200g");
+    })
+    await test.step('Submit form', async () => {
+      await addRecipePage.submit();
+    })
+    await test.step('Verify user redirected to recipe page', async () => {
+      await expect(addRecipePage.successToast).toBeVisible();
+      await expect(addRecipePage.page).toHaveURL((url) =>
+        url.pathname.startsWith("/recipes/"),
+      );
+    })
   });
 
   test("форма додавання рецепта відкривається за прямим посиланням", async ({

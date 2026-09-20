@@ -13,7 +13,7 @@ test('click seach', async ({ page }) => {
 });
 
 test('login page', async ({ page }) => {
-    await page.goto('http://localhost:5173/auth/login')
+    await page.goto('/auth/login')
     await page.locator('#email').fill('goit@gmail.com')
     await page.locator('#password').fill('Foodies2025!')
 });
@@ -25,12 +25,12 @@ test('enter search request', async ({ page }) => {
 });
 
 test('checkbox demo', async ({ page }) => {
-    await page.goto('http://localhost:5173/auth/register')
+    await page.goto('/auth/register')
     await page.locator('#terms').check()
 });
 
 test('add receipe', async ({ page }) => {
-    await page.goto('http://localhost:5173/auth/login')
+    await page.goto('/auth/login')
     await page.locator('#email').fill('goit@gmail.com')
     await page.locator('#password').fill('Foodies2025!')
     await page.getByRole('button', {name: "Login"}).click()
