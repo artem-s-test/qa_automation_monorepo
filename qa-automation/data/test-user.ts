@@ -1,4 +1,4 @@
 export const DEFAULT_USER = {
-  email: 'goit@gmail.com',
+  email: 'user@gmail.com',
   password: 'Foodies2025!'
 }

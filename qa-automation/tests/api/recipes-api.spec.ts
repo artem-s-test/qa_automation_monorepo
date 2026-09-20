@@ -27,7 +27,6 @@ test("GET /recipes returns list", async ({ request }) => {
   expect(getRecipesBody.message).toEqual("Successfully found recipes!");
   const recipeBody = getRecipesBody.data.data;
   expect(Array.isArray(recipeBody)).toBeTruthy();
-  console.log(await response.json());
   expect(recipeBody.length).toBeGreaterThan(0);
   recipeBody.forEach((recipe) => {
     expect(recipe).toHaveProperty("title");
@@ -54,7 +53,6 @@ test("POST /auth/login returns error if password is improper", async ({ request 
       password: "wrong342423",
     },
   });
-  console.log(JSON.stringify((await response.json())));
   expect(response.status()).toEqual(401);
 });
 
