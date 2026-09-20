@@ -21,7 +21,6 @@ test("page evaluate demo", async ({ page }) => {
   const buttonCount = await page.evaluate(() => {
     return document.querySelectorAll("button").length;
   });
-  console.log(buttonCount)
 
 
 await expect(page
@@ -29,5 +28,4 @@ await expect(page
 const recipeTitles = await page
     .locator('article')
     .evaluateAll(cards => cards.map(card => card.textContent.trim()));
-    console.log(recipeTitles)
 });

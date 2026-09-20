@@ -5,7 +5,6 @@ test("синтаксис async/await", async ({ page }) => {
    async function loadUser() {
     const response = await fetch("http://localhost:4040/api/users/1");
     const user = await response.json();
-    console.log(user);
   }
   loadUser()
 });
