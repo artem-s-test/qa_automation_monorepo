@@ -18,6 +18,7 @@ test('Змінні в JS', async ({ page }) => {
 
     // BASE_URL = 'google.com'
     // console.log(BASE_URL)
+    expect(0).toBe(1)
 });
 
 test('Типи даних', async ({page}) => {
