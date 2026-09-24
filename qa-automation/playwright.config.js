@@ -26,7 +26,8 @@ export default defineConfig({
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: [
     ['list'],
-    ['html', { open: 'never' }]
+    ['html', { open: 'never' }],
+    ['json', { outputFile: 'results.json' }]
   ],
   expect: {
     timeout: 15000

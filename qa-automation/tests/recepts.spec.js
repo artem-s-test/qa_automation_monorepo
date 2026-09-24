@@ -38,23 +38,13 @@ test.describe("Пошук рецептів", () => {
     expect(count).toBeGreaterThan(0);
   });
 
-  test("пошук рецепта за назвою", async ({ page }, testInfo) => {
+  test("пошук рецепта за назвою", async ({ page }) => {
+    // open main page
     await page.getByPlaceholder("Search recipes").fill("avocado");
     await page.getByPlaceholder("Search recipes").press("Enter");
 
     await expect(page.getByRole("article").first()).toBeVisible();
     await expect(page.getByRole("article").first()).toContainText("avocado");
-    // console.log(`Знайдено рецептів: ${await page.getByRole("article").count()}`);
-    await testInfo.attach('search-log', {
-      body: `Запит: "суп". Знайдено рецептів: ${await page.getByRole("article").count()}`,
-      contentType: 'text/plain',
-    });
-
-    const screenshot = await page.screenshot();
-
-      await testInfo.attach('search-results', {
-        body: screenshot,
-        contentType: 'image/png',
-      });
+ 
   });
 });
